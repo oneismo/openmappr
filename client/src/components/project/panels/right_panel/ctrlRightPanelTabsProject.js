@@ -6,7 +6,9 @@ angular.module('common')
         'BROADCAST_MESSAGES',
         'dataGraph',
         '$uibModal',
-        function($scope, $rootScope, graphSelectionService, BROADCAST_MESSAGES, dataGraph, $uibModal) {
+        'ngIntroService',
+        '$timeout',
+        function($scope, $rootScope, graphSelectionService, BROADCAST_MESSAGES, dataGraph, $uibModal, ngIntroService, $timeout) {
             'use strict';
 
             /*************************************
@@ -20,6 +22,16 @@ angular.module('common')
             /**
              *  Scope data
              */
+
+            var filterIntroOptions = {
+                steps: [
+                    {
+                        element: '#mainFilterPanel',
+                        intro: 'This is'
+                    }
+                ],
+                exitOnOverlayClick: false
+            };
 
             $scope.rightPanelTabs = [
             //   {
@@ -37,6 +49,10 @@ angular.module('common')
                     panel: 'filter',
                     cmd: function() {
                         $scope.panelUI.openPanel('filter');
+                        $timeout(function () {
+                            ngIntroService.setOptions(filterIntroOptions);
+                            ngIntroService.start();
+                        }, 1500);
                     }
                 },
                 {

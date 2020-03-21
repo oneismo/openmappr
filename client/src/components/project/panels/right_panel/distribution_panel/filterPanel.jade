@@ -1,5 +1,5 @@
 .flex-transclude.width-100(ng-mouseleave="rightPanelExited();", ng-controller="FilterPanelParentCtrl")
-	.flex-vert-container.flex-transclude.panel-container.width-100
+	.flex-vert-container.flex-transclude.panel-container.width-100(id="mainFilterPanel")
 		//- .header(ng-click="panelUI.togglePanel('filter');" ng-class="{'active': panelUI.filterPanelOpen, 'hovered': panelUI.filterPanelHover}" ng-mouseenter="panelUI.filterPanelOpen ? showFilterSearch = true : showFilterSearch = false; panelUI.filterPanelHover = true;" ng-mouseleave="showFilterSearch = false; panelUI.filterPanelHover = false;")
 		.header(ng-mouseenter="panelUI.filterPanelOpen ? showFilterSearch = true : showFilterSearch = false;" ng-mouseleave="showFilterSearch = false;")
 			.row.vert-align.main
