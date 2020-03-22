@@ -1,6 +1,7 @@
 angular.module('common')
-    .controller('RightPanelTabsPlayerCtrl', ['$rootScope', '$scope', 'graphSelectionService', 'BROADCAST_MESSAGES', 'dataGraph',
-        function($rootScope, $scope, graphSelectionService, BROADCAST_MESSAGES, dataGraph) {
+    .controller('RightPanelTabsPlayerCtrl', ['$rootScope', '$scope', 'graphSelectionService', 'BROADCAST_MESSAGES', 'ngIntroService', 'FilterPanelService',
+        '$timeout',
+        function($rootScope, $scope, graphSelectionService, BROADCAST_MESSAGES, ngIntroService, FilterPanelService, $timeout) {
             'use strict';
 
             /*************************************
@@ -42,6 +43,10 @@ angular.module('common')
                     tooltipTitle: 'Filter data by one or more attributes',
                     cmd: function() {
                         $scope.panelUI.openPanel('filter');
+                        $timeout(function () {
+                            ngIntroService.setOptions(FilterPanelService.getFilterIntroOptions());
+                            ngIntroService.start();
+                        }, 100);
                     }
                 },
                 {
@@ -74,15 +79,15 @@ angular.module('common')
              **************************************/
 
             $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function() {
-               updateSelCount();
+                updateSelCount();
             });
 
             $scope.$on(BROADCAST_MESSAGES.selectNodes, function() {
-               updateSelCount();
+                updateSelCount();
             });
 
             $scope.$on(BROADCAST_MESSAGES.selectStage, function() {
-               updateSelCount();
+                updateSelCount();
             });
 
             $scope.$on(BROADCAST_MESSAGES.fp.currentSelection.changed, function() {
@@ -102,7 +107,7 @@ angular.module('common')
              **************************************/
 
             function updateSelCount() {
-               $scope.selNodesCount = graphSelectionService.getSelectedNodes().length;
+                $scope.selNodesCount = graphSelectionService.getSelectedNodes().length;
             }
 
         }

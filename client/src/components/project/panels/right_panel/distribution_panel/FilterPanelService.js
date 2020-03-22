@@ -98,6 +98,7 @@ angular.module('common')
             };
 
 
+            this.getFilterIntroOptions = getFilterIntroOptions;
 
 
             /*************************************
@@ -322,6 +323,52 @@ angular.module('common')
                     }
                 }
                 return panelColor;
+            }
+
+            function addKeywordStepIfExists(steps) {
+                var element = $('dir-tag-cloud').closest('.filter-item');
+                if (element.length) {
+                    steps.push({
+                        element: element[0],
+                        intro: 'These are keywords that come up in the data set'
+                    });
+                }
+
+                return steps;
+            }
+
+            function addCategoryStepIfExists(steps) {
+                var element = $('dir-category-list').closest('.filter-item');
+                if (element.length) {
+                    steps.push({
+                        element: element[0],
+                        intro: 'This is better at filtering data by different categories and shows the count of data points in these categories.'
+                    });
+                }
+
+                return steps;
+            }
+
+            function getFilterIntroOptions() {
+                var steps = [
+                    {
+                        element: '#mainFilterPanel',
+                        intro: 'By knowing how this section works, you will be able to browse through data at your convenience, ~as if you were searching through a variety of shoes on zappos to find the perfect pair.~'
+                    },
+                ];
+                steps = addKeywordStepIfExists(steps);
+                steps = addCategoryStepIfExists(steps);
+
+                return {
+                    steps: steps,
+                    disableInteraction: true,
+                    exitOnOverlayClick: false,
+                    showBullets: false,
+                    scrollToElement: false,
+                    keyboardNavigation: false,
+                    exitOnEsc: false,
+                    showStepNumbers: false
+                };
             }
 
         }
