@@ -367,7 +367,8 @@ angular.module('common')
                     scrollToElement: false,
                     keyboardNavigation: false,
                     exitOnEsc: false,
-                    showStepNumbers: false
+                    showStepNumbers: false,
+                    tooltipPosition: 'right'
                 };
             }
 
