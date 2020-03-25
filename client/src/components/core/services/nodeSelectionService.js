@@ -34,6 +34,9 @@ angular.module('common')
             this.getSelectionInfo         = getSelectionInfo;
             this.setSelectionInfo         = setSelectionInfo;
             this.clearSelections          = clearSelections;
+            this.selectionActionByAttributes = selectionActionByAttributes;
+            this.unselectActionByAttributes = unselectActionByAttributes;
+            this.highlightAllSelected = highlightAllSelected;
 
 
 
@@ -66,11 +69,13 @@ angular.module('common')
             // attr - by which node Attr
             // value - hover nodes for which the value of above mentioned attr is 'value'
             function hoverNodesByAttrib(attr, value, $event, fivePct) {
-                _hoverHelper(value != null ? dataGraph.getNodesByAttrib(attr, value, fivePct) : []);
+                var nodes = [..._getSelectedNodes(), ...(value != null ? dataGraph.getNodesByAttrib(attr, value, fivePct) : [])];
+                _hoverHelper(nodes);
             }
 
             function hoverNodesByAttributes(attr, values, $event, fivePct) {
-                _hoverHelper(values.length ? dataGraph.getNodesByAttributes(attr, values, fivePct) : []);
+                var nodes = [..._getSelectedNodes(), ...(values.length ? dataGraph.getNodesByAttributes(attr, values, fivePct) : [])];
+                _hoverHelper(nodes);
             }
 
             function unhoverNodesByAttributes(attr, values, $event, fivePct) {
@@ -83,6 +88,7 @@ angular.module('common')
 
             function hoverNodesByAttribRange(attr, min, max) {
                 _hoverHelper(dataGraph.getNodesByAttribRange(attr, min, max));
+                highlightAllSelected(true);
             }
 
             function hoverNodeIdList(nodeIds) {
@@ -93,6 +99,35 @@ angular.module('common')
                 _hoverHelper(nodeIds, 1);
             }
 
+            // Select action - START
+            function selectionActionByAttributes(attr, values, $event, fivePct) {
+                selectionInfo[attr] = selectionInfo[attr] || [];
+                selectionInfo[attr] = [...selectionInfo[attr], ...values];
+
+                selectionInfo[attr] = _.uniq(selectionInfo[attr]);
+
+                highlightAllSelected(true);
+            }
+
+            function unselectActionByAttributes(attr, values, $event, fivePct) {
+                _.remove(selectionInfo[attr], function (value) {
+                    return values.indexOf(value) > -1;
+                });
+
+                if (!selectionInfo[attr].length) {
+                    delete selectionInfo[attr];
+                }
+
+                highlightAllSelected(true);
+            }
+
+            function highlightAllSelected(fivePct) {
+                _.forEach(selectionInfo, function (attrValues, attribute) {
+                    _hoverHelper(attrValues.length ? dataGraph.getNodesByAttributes(attribute, attrValues, fivePct) : []);
+                });
+            }
+
+            // Select action - END
             function selectBySelector(selector, $event, raiseEvents) {
                 console.debug('select by Selector------------------------', selector);
                 _selectHelper(selector, raiseEvents, $event);
@@ -233,6 +268,18 @@ angular.module('common')
             /*************************************
     ********* Local Functions ************
     **************************************/
+            function _getSelectedNodes() {
+                var nodes = [];
+
+                _.forEach(selectionInfo, function (attrValues, attr) {
+                   var localNodes = attrValues.length ? dataGraph.getNodesByAttributes(attr, attrValues, true) : [];
+
+                   nodes = [...localNodes];
+                });
+
+                return nodes;
+            }
+
             function _hoverHelper(ids, degree) {
                 degree = degree || 0;
                 if (ids.length === 0) {

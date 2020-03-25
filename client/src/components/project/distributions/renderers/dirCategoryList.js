@@ -154,7 +154,11 @@ angular.module('common')
                 scope.onCatClick = function(catData) {
                     catData.isChecked = !catData.isChecked;
                     selectFilter();
-                    hoverSelectedNodes();
+                    if (catData.isChecked) {
+                        hoverSelectedNodes(event);
+                    } else {
+                        unhoverSelectedNodes([catData.id], event);
+                    }
                 };
 
                 scope.onCatMouseover = function(catData, $event) {
@@ -169,6 +173,15 @@ angular.module('common')
                             scope.tooltipText = catData.text;
                         }
                     }
+
+                    renderCtrl.hoverNodesByAttrib(attrId, catData.id, $event);
+                };
+
+                scope.outCat = function() {
+                    // $timeout(function() {
+                    scope.openTooltip = false;
+                    renderCtrl.unHoverNodes();
+                    // }, 100);
                 };
 
                 scope.onFilterUpdate = function() {
@@ -180,10 +193,13 @@ angular.module('common')
                     return filterConfig.state.selectedVals;
                 }
 
-                function hoverSelectedNodes() {
-                    renderCtrl.unHoverNodes();
+                function hoverSelectedNodes(event) {
                     var selectedValues = getSelectedValues() || [];
-                    renderCtrl.hoverNodesByAttributes(attrId, selectedValues, event);
+                    renderCtrl.highlightNodesByAttributes(attrId, selectedValues, event);
+                }
+
+                function unhoverSelectedNodes(values, event) {
+                    renderCtrl.unhighlightNodesByAttributes(attrId, values, event);
                 }
 
 

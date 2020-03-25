@@ -76,6 +76,8 @@ angular.module('common')
                 this.hoverNodesByAttributes = hoverNodesByAttributes;
                 this.unhoverNodesByAttrib = unhoverNodesByAttrib;
                 this.unhoverNodesByAttributes = unhoverNodesByAttributes;
+                this.highlightNodesByAttributes = highlightNodesByAttributes;
+                this.unhighlightNodesByAttributes = unhighlightNodesByAttributes;
                 this.hoverNodesByAttribRange = hoverNodesByAttribRange;
                 this.hoverNodeIdList = hoverNodeIdList;
                 this.unHoverNodes = unHoverNodes;
@@ -249,6 +251,14 @@ angular.module('common')
                 !isFPScrollActive() && debHoverByAttributes(id, values, ev, true);
             }
 
+            function highlightNodesByAttributes(id, values, ev) {
+                !isFPScrollActive() && nodeSelectionService.selectionActionByAttributes(id, values, ev, true);
+            }
+
+            function unhighlightNodesByAttributes(id, values, ev) {
+                !isFPScrollActive() && nodeSelectionService.unselectActionByAttributes(id, values, ev, true);
+            }
+
             function unhoverNodesByAttributes(id, values, ev) {
                 !isFPScrollActive() && debUnHoverByAttributes(id, values, ev, true);
             }
@@ -290,6 +300,7 @@ angular.module('common')
                 debSelectIdList.cancel();
                 debSelectByAttrRange.cancel();
                 graphHoverService.clearHovers(true);
+                nodeSelectionService.highlightAllSelected();
             }
 
             function getSelectedNodes() {
