@@ -1,6 +1,6 @@
 angular.module('common')
-    .controller('FilterPanelCtrl', ['$scope', '$rootScope', '$timeout', 'FilterPanelService', 'SelectorService', 'dataGraph', 'AttrInfoService', 'graphSelectionService', 'layoutService', 'nodeSelectionService', 'uiService', 'attrUIService', 'renderGraphfactory', 'networkService', 'BROADCAST_MESSAGES',
-        function($scope, $rootScope, $timeout, FilterPanelService, SelectorService, dataGraph, AttrInfoService, graphSelectionService, layoutService, nodeSelectionService, uiService, attrUIService, renderGraphfactory, networkService, BROADCAST_MESSAGES){
+    .controller('FilterPanelCtrl', ['$scope', '$rootScope', '$timeout', 'FilterPanelService', 'SelectorService', 'dataGraph', 'AttrInfoService', 'graphSelectionService', 'layoutService', 'nodeSelectionService', 'uiService', 'attrUIService', 'renderGraphfactory', 'networkService', 'BROADCAST_MESSAGES', 'graphHoverService',
+        function($scope, $rootScope, $timeout, FilterPanelService, SelectorService, dataGraph, AttrInfoService, graphSelectionService, layoutService, nodeSelectionService, uiService, attrUIService, renderGraphfactory, networkService, BROADCAST_MESSAGES, graphHoverService){
             'use strict';
 
             /*************************************
@@ -168,6 +168,9 @@ angular.module('common')
                 _selectNodes(ev);
                 FilterPanelService.setFilterMapAfterSubset(FilterPanelService.getAttrFilterConfigMap());
                 var undoRedoResultObject = FilterPanelService.appendToSelectionHistory(filterGetLastState);
+
+                graphHoverService.unhoverNodes();
+                nodeSelectionService.clearSelectedNodes();
                 $scope.$emit(BROADCAST_MESSAGES.fp.filter.undoRedoStatus, undoRedoResultObject);
             }
 
@@ -189,6 +192,7 @@ angular.module('common')
                 FilterPanelService.resetFilters();
                 $scope.$broadcast(BROADCAST_MESSAGES.fp.filter.reset);
                 $scope.$emit(BROADCAST_MESSAGES.fp.filter.reset);
+                nodeSelectionService.clearSelectedNodes();
                 updateSelAndGraph(window.event);
             }
 

@@ -37,6 +37,7 @@ angular.module('common')
             this.selectionActionByAttributes = selectionActionByAttributes;
             this.unselectActionByAttributes = unselectActionByAttributes;
             this.highlightAllSelected = highlightAllSelected;
+            this.clearSelectedNodes = clearSelectedNodes;
 
 
 
@@ -194,6 +195,11 @@ angular.module('common')
                             graphSelectionService.selectByIds(selectedNodeIds, 0);
                     }, raiseEvents, true);
                 }
+            }
+
+
+            function clearSelectedNodes() {
+                selectionInfo = {};
             }
 
 
