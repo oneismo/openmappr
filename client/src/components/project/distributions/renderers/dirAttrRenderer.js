@@ -300,7 +300,7 @@ angular.module('common')
                 debSelectIdList.cancel();
                 debSelectByAttrRange.cancel();
                 graphHoverService.clearHovers(true);
-                nodeSelectionService.highlightAllSelected();
+                nodeSelectionService.highlightAllSelected(true);
             }
 
             function getSelectedNodes() {

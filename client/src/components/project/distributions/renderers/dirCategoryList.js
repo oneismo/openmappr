@@ -106,7 +106,7 @@ angular.module('common')
                         var filterConfig = FilterPanelService.getFilterForId(attrId);
                         filteringCatVals = (filterConfig && filterConfig.state && filterConfig.state.selectedVals) || [];
                         draw();
-                        hoverSelectedNodes();
+                        // hoverSelectedNodes();
                     } catch(e) {
                         console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack,e);
                     }

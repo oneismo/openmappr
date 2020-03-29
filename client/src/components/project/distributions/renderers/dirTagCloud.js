@@ -161,44 +161,41 @@ angular.module('common')
                 });
 
                 scope.overCat = function(catData, event) {
-                    $timeout(function() {
-                        var curTarget = $(event.currentTarget);
-                        var pos = curTarget.position();
-                        // console.log('off: ', off);
-                        // console.log('catData: ', catData);
-                        if(catData.curSelLength === 1) {
-                            if(catData.globalTagFreq == 1) {
-                                scope.tooltipText = catData.text + " is unique to this";
-                            } else {
-                                scope.tooltipText = Number(catData.globalTagFreq - 1) + " others are also tagged as " + catData.text;
-                            }
-                        } else if(catData.curSelLength == 0) {
-                            // var verb = catData.globalTagFreq == 1 ? 'is' : 'are';
-                            scope.tooltipText = catData.globalTagFreq + " of " + catData.totalNodes + " tagged as " + catData.text;
+                    // $timeout(function() {
+                    var curTarget = $(event.currentTarget);
+                    var pos = curTarget.position();
+                    // console.log('off: ', off);
+                    // console.log('catData: ', catData);
+                    if(catData.curSelLength === 1) {
+                        if(catData.globalTagFreq == 1) {
+                            scope.tooltipText = catData.text + " is unique to this";
                         } else {
-                            // var verb = catData.selTagFreq == 1 ? 'is' : 'are';
-                            scope.tooltipText = catData.selTagFreq + " of " + catData.curSelLength + " tagged as " + catData.text;
+                            scope.tooltipText = Number(catData.globalTagFreq - 1) + " others are also tagged as " + catData.text;
                         }
-                        element.find('.tooltip-positioner').css({
-                            top : pos.top - 5,
-                            left : pos.left + curTarget.width()
-                        });
-                        scope.openTooltip = true;
+                    } else if(catData.curSelLength == 0) {
+                        // var verb = catData.globalTagFreq == 1 ? 'is' : 'are';
+                        scope.tooltipText = catData.globalTagFreq + " of " + catData.totalNodes + " tagged as " + catData.text;
+                    } else {
+                        // var verb = catData.selTagFreq == 1 ? 'is' : 'are';
+                        scope.tooltipText = catData.selTagFreq + " of " + catData.curSelLength + " tagged as " + catData.text;
+                    }
+                    element.find('.tooltip-positioner').css({
+                        top : pos.top - 5,
+                        left : pos.left + curTarget.width()
+                    });
+                    scope.openTooltip = true;
 
-                        // hover nodes
-                        renderCtrl.hoverNodesByAttrib(attrId, catData.id, event);
+                    // hover nodes
+                    renderCtrl.hoverNodesByAttrib(attrId, catData.id, event);
 
-                    }, 10);
+                    // }, 10);
                 };
 
                 scope.outCat = function(catData, event) {
-                    $timeout(function() {
-                        scope.openTooltip = false;
-
-                        if (!catData.isChecked) {
-                            renderCtrl.unhoverNodesByAttrib(attrId, catData.id, event);
-                        }
-                    }, 100);
+                    // $timeout(function() {
+                    scope.openTooltip = false;
+                    renderCtrl.unHoverNodes();
+                    // }, 100);
                 };
 
 
@@ -218,7 +215,7 @@ angular.module('common')
                     if (catData.isChecked) {
                         hoverSelectedNodes(event);
                     } else {
-                        unhoverSelectedNodes(event);
+                        unhoverSelectedNodes([catData.id], event);
                     }
                 };
 
@@ -233,12 +230,11 @@ angular.module('common')
 
                 function hoverSelectedNodes(event) {
                     var selectedValues = getSelectedValues() || [];
-                    renderCtrl.hoverNodesByAttributes(attrId, selectedValues, event);
+                    renderCtrl.highlightNodesByAttributes(attrId, selectedValues, event);
                 }
 
-                function unhoverSelectedNodes(event) {
-                    var selectedValues = getSelectedValues() || [];
-                    renderCtrl.unhoverNodesByAttributes(attrId, selectedValues, event);
+                function unhoverSelectedNodes(values, event) {
+                    renderCtrl.unhighlightNodesByAttributes(attrId, values, event);
                 }
 
                 /// filter stuff

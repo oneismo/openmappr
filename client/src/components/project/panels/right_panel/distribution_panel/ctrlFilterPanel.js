@@ -166,25 +166,32 @@ angular.module('common')
                 var filterGetLastState = FilterPanelService.getFilterMapAfterSubset();
                 FilterPanelService.applyFilters();
                 _selectNodes(ev);
+
                 FilterPanelService.setFilterMapAfterSubset(FilterPanelService.getAttrFilterConfigMap());
                 var undoRedoResultObject = FilterPanelService.appendToSelectionHistory(filterGetLastState);
 
-                graphHoverService.unhoverNodes();
                 nodeSelectionService.clearSelectedNodes();
+                graphHoverService.clearHovers(true);
                 $scope.$emit(BROADCAST_MESSAGES.fp.filter.undoRedoStatus, undoRedoResultObject);
             }
 
             function onFilterUndo() {
                 var undoRedoResultObject = FilterPanelService.undoFilterFromSelectionHistory();
                 $scope.$emit(BROADCAST_MESSAGES.fp.filter.undoRedoStatus, undoRedoResultObject);
+                _selectNodes({});
 
+                graphHoverService.clearHovers(true);
+                nodeSelectionService.clearSelectedNodes();
                 _selectNodes({}, true);
             }
 
             function onFilterRedo() {
                 var undoRedoResultObject = FilterPanelService.redoFilterFromSelectionHistory();
                 $scope.$emit(BROADCAST_MESSAGES.fp.filter.undoRedoStatus, undoRedoResultObject);
+                _selectNodes({});
 
+                graphHoverService.clearHovers(true);
+                nodeSelectionService.clearSelectedNodes();
                 _selectNodes({}, true);
             }
 
@@ -262,6 +269,7 @@ angular.module('common')
                     renderer = renderGraphfactory.getRenderer();
 
                 $scope.currentSelection = currentSelection;
+
                 if(!currentSelection || (_.isArray(currentSelection) && currentSelection.length === 0)) {
                     if(FilterPanelService.getActiveFilterCount() > 0) {
                         graphSelectionService.clearSelections();

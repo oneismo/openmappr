@@ -70,12 +70,15 @@ angular.module('common')
             // attr - by which node Attr
             // value - hover nodes for which the value of above mentioned attr is 'value'
             function hoverNodesByAttrib(attr, value, $event, fivePct) {
-                var nodes = [..._getSelectedNodes(), ...(value != null ? dataGraph.getNodesByAttrib(attr, value, fivePct) : [])];
-                _hoverHelper(nodes);
+                var subsettedNodes = dataGraph.getAllNodes();
+                var nodes = (value != null ? dataGraph.getNodesByAttrib(attr, value, fivePct, subsettedNodes, true) : []);
+
+                _hoverHelper(_.map(nodes, 'id'));
             }
 
             function hoverNodesByAttributes(attr, values, $event, fivePct) {
-                var nodes = [..._getSelectedNodes(), ...(values.length ? dataGraph.getNodesByAttributes(attr, values, fivePct) : [])];
+                var selectedNodes = _getSelectedNodes(true) || [];
+                var nodes = [...selectedNodes, ...(values.length ? dataGraph.getNodesByAttributes(attr, values, fivePct) : [])];
                 _hoverHelper(nodes);
             }
 
@@ -102,6 +105,10 @@ angular.module('common')
 
             // Select action - START
             function selectionActionByAttributes(attr, values, $event, fivePct) {
+                if (!values || !values.length) {
+                    return;
+                }
+
                 selectionInfo[attr] = selectionInfo[attr] || [];
                 selectionInfo[attr] = [...selectionInfo[attr], ...values];
 
@@ -115,7 +122,7 @@ angular.module('common')
                     return values.indexOf(value) > -1;
                 });
 
-                if (!selectionInfo[attr].length) {
+                if (selectionInfo[attr] && !selectionInfo[attr].length) {
                     delete selectionInfo[attr];
                 }
 
@@ -123,9 +130,15 @@ angular.module('common')
             }
 
             function highlightAllSelected(fivePct) {
+                var nodes = [];
+
                 _.forEach(selectionInfo, function (attrValues, attribute) {
-                    _hoverHelper(attrValues.length ? dataGraph.getNodesByAttributes(attribute, attrValues, fivePct) : []);
+                    if (attrValues && attrValues.length) {
+                        nodes = attrValues.length ? dataGraph.getNodesByAttributes(attribute, attrValues, fivePct, nodes.length ? nodes : null, true) : [];                   
+                    }
                 });
+
+                _hoverHelper(_.map(nodes, 'id'));
             }
 
             // Select action - END
@@ -274,11 +287,11 @@ angular.module('common')
             /*************************************
     ********* Local Functions ************
     **************************************/
-            function _getSelectedNodes() {
+            function _getSelectedNodes(getNode, tempSelectedInfo) {
                 var nodes = [];
 
-                _.forEach(selectionInfo, function (attrValues, attr) {
-                   var localNodes = attrValues.length ? dataGraph.getNodesByAttributes(attr, attrValues, true) : [];
+                _.forEach(tempSelectedInfo, function (attrValues, attr) {
+                   var localNodes = attrValues.length ? dataGraph.getNodesByAttributes(attr, attrValues, true, null, getNode) : [];
 
                    nodes = [...localNodes];
                 });

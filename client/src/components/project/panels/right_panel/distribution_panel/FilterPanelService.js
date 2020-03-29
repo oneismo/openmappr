@@ -201,6 +201,8 @@ angular.module('common')
                 }, initialSelection.length > 0 ? initialSelection : null);
                 currentSelection = cs || [];
 
+                dataGraph.setSubsettedNodes(currentSelection, !cs);
+
                 return currentSelection;
             }
 
