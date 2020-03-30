@@ -22,6 +22,7 @@ angular.module('player')
             $rootScope.MAPP_EDITOR_OPEN = false;
             $scope.playerUrlStr = $routeParams.urlStr;
             // UI
+            $scope.hideFilterExtraButtons = true;
             $scope.appUi = {
                 theme: null,
                 openExtUserOverlay: false,
